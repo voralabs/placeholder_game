@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Scramble Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #scrambled-word {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #333;
+        }
+        #message {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        #game-area {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="font-size: 2.5em; margin-bottom: 5px;">PodSieve</h1>
+    <p style="color: #666; margin-bottom: 20px;">Coming Soon (play game in the meantime)</p>
+    <div id="game-container">
+        <h2>Word Scramble Game</h2>
+        <div id="start-screen">
+            <p>Welcome to Word Scramble!</p>
+            <button onclick="startGame()">Start Game</button>
+        </div>
+        <div id="game-area">
+            <div id="scrambled-word"></div>
+            <input type="text" id="user-input" placeholder="Enter your guess">
+            <button onclick="checkAnswer()">Submit</button>
+            <button onclick="newWord()">New Word</button>
+            <div id="message"></div>
+            <div id="score">Score: <span id="score-value">0</span></div>
+        </div>
+    </div>
+
+    <script>
+        const words = [
+            "javascript", "html", "coding", "program", "computer",
+            "developer", "website", "internet", "software", "database"
+        ];
+
+        let currentWord = "";
+        let scrambledWord = "";
+        let score = 0;
+
+        function scrambleWord(word) {
+            let letters = word.split('');
+            for (let i = letters.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [letters[i], letters[j]] = [letters[j], letters[i]];
+            }
+            return letters.join('');
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            newWord();
+        }
+
+        function newWord() {
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            scrambledWord = scrambleWord(currentWord);
+            document.getElementById('scrambled-word').textContent = scrambledWord;
+            document.getElementById('user-input').value = '';
+            document.getElementById('message').textContent = '';
+        }
+
+        function checkAnswer() {
+            const userGuess = document.getElementById('user-input').value.toLowerCase();
+            if (userGuess === currentWord) {
+                document.getElementById('message').textContent = 'Correct! Well done!';
+                document.getElementById('message').style.color = 'green';
+                score++;
+                document.getElementById('score-value').textContent = score;
+                setTimeout(newWord, 1500);
+            } else {
+                document.getElementById('message').textContent = 'Wrong! Try again!';
+                document.getElementById('message').style.color = 'red';
+            }
+        }
+
+        // Allow Enter key to submit answer
+        document.getElementById('user-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+    </script>
+</body>
+</html>
